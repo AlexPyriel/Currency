@@ -1,0 +1,9 @@
+{
+    "name": "GDF.Currency.Installers.Zenject",
+    "references": [ "GDF.Currency", "GDF.ConfigRepository", "GDF.LocalDataStorage", "Zenject" ],
+    "includePlatforms": [], "excludePlatforms": [],
+    "allowUnsafeCode": false, "overrideReferences": false,
+    "precompiledReferences": [], "autoReferenced": true,
+    "defineConstraints": [], "versionDefines": [],
+    "noEngineReferences": false
+}

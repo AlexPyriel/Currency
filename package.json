@@ -1,0 +1,25 @@
+{
+  "name": "com.gdf.currency",
+  "version": "1.0.0",
+  "displayName": "GDF Currency",
+  "description": "Multi-currency wallet service for Unity. Add / Spend / Reset currencies with earned-total tracking; config lives in com.gdf.config-repository, state persists through com.gdf.local-data-storage.",
+  "unity": "6000.0",
+  "author": {
+    "name": "GDF"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AlexPyriel/Currency.git"
+  },
+  "dependencies": {
+    "com.gdf.config-repository": "https://github.com/AlexPyriel/ConfigRepository.git#v1.1.0",
+    "com.gdf.local-data-storage": "https://github.com/AlexPyriel/LocalDataStorage.git#v2.0.0"
+  },
+  "keywords": [
+    "currency",
+    "wallet",
+    "soft",
+    "hard",
+    "f2p"
+  ]
+}

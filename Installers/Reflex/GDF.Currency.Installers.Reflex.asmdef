@@ -1,0 +1,9 @@
+{
+    "name": "GDF.Currency.Installers.Reflex",
+    "references": [ "GDF.Currency", "GDF.ConfigRepository", "GDF.LocalDataStorage", "Reflex" ],
+    "includePlatforms": [], "excludePlatforms": [],
+    "allowUnsafeCode": false, "overrideReferences": false,
+    "precompiledReferences": [], "autoReferenced": true,
+    "defineConstraints": [], "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,0 +1,17 @@
+{
+    "name": "GDF.Currency",
+    "references": [
+        "GDF.ConfigRepository",
+        "GDF.LocalDataStorage",
+        "AYellowpaper.SerializedCollections"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
