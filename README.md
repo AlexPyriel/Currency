@@ -31,7 +31,7 @@ Assembly name: `GDF.Currency`
 Add this dependency to `Packages/manifest.json`:
 
 ```json
-"com.gdf.currency": "https://github.com/AlexPyriel/Currency.git#v1.0.0"
+"com.gdf.currency": "https://github.com/AlexPyriel/Currency.git#v1.0.1"
 ```
 
 For development tracking (not recommended for production), use `#main` instead of a tag.
@@ -39,7 +39,7 @@ For development tracking (not recommended for production), use `#main` instead o
 You can also install it from Unity Package Manager:
 
 - `Window -> Package Manager -> + -> Add package from git URL...`
-- `https://github.com/AlexPyriel/Currency.git#v1.0.0`
+- `https://github.com/AlexPyriel/Currency.git#v1.0.1`
 
 ## Usage
 
@@ -51,6 +51,10 @@ default values and icons.
 ### 2. Register the service
 
 ```csharp
+using GDF.Currency.Installers.VContainer;
+using LocalDataStorage.Installers.VContainer;
+using VContainer;
+
 protected override void Configure(IContainerBuilder builder)
 {
     new LocalDataStorageVContainerInstaller().WithFileBackend().Install(builder);
@@ -61,6 +65,9 @@ protected override void Configure(IContainerBuilder builder)
 ### 3. Initialize at startup
 
 ```csharp
+using GDF.Currency;
+using VContainer.Unity;
+
 public sealed class BootstrapEntryPoint : IStartable
 {
     [Inject] private readonly ICurrencyService _wallet;
@@ -72,6 +79,8 @@ public sealed class BootstrapEntryPoint : IStartable
 ### 4. Use from gameplay
 
 ```csharp
+using GDF.Currency;
+
 _wallet.Add("gold", 50);
 
 if (_wallet.Spend("gems", 10))

@@ -1,6 +1,6 @@
 {
   "name": "com.gdf.currency",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "displayName": "GDF Currency",
   "description": "Multi-currency wallet service for Unity. Add / Spend / Reset currencies with earned-total tracking; config lives in com.gdf.config-repository, state persists through com.gdf.local-data-storage.",
   "unity": "6000.0",
