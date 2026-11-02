@@ -1,7 +1,7 @@
-using Currency.Config;
+using GDF.Currency.Config;
 using Zenject;
 
-namespace Currency.Installers.Zenject
+namespace GDF.Currency.Installers.Zenject
 {
     /// <summary>Registers <see cref="ICurrencyService"/> in a Zenject container. Pass a repository as the Install arg.</summary>
     public sealed class CurrencyZenjectInstaller : Installer<CurrencyRepository, CurrencyZenjectInstaller>

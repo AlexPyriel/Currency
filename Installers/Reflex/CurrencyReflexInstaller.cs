@@ -1,8 +1,8 @@
-using Currency.Config;
+using GDF.Currency.Config;
 using Reflex.Core;
 using UnityEngine;
 
-namespace Currency.Installers.Reflex
+namespace GDF.Currency.Installers.Reflex
 {
     /// <summary>Registers <see cref="ICurrencyService"/> in a Reflex container.</summary>
     public sealed class CurrencyReflexInstaller : MonoBehaviour, IInstaller

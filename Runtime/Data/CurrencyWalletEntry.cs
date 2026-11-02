@@ -1,6 +1,6 @@
 using System;
 
-namespace Currency.Data
+namespace GDF.Currency.Data
 {
     /// <summary>Serialized per-currency wallet entry. Carries both current and total-earned amounts.</summary>
     [Serializable]

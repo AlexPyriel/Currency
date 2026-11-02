@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using Currency.Config;
-using Currency.Data;
+using GDF.Currency.Config;
+using GDF.Currency.Data;
 using LocalDataStorage;
 using UnityEngine;
 
-namespace Currency.Internal
+namespace GDF.Currency.Internal
 {
     /// <summary>
     /// Default <see cref="ICurrencyService"/> implementation. Reads definitions from a

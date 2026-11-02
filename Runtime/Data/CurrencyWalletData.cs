@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using LocalDataStorage;
 
-namespace Currency.Data
+namespace GDF.Currency.Data
 {
     /// <summary>Persisted wallet state. One entry per currency defined in the <see cref="Config.CurrencyRepository"/>.</summary>
     [Serializable]

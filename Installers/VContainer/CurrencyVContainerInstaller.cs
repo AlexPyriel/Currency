@@ -1,8 +1,9 @@
 using System;
-using Currency.Config;
+using GDF.Currency.Config;
 using VContainer;
+using VContainer.Unity;
 
-namespace Currency.Installers.VContainer
+namespace GDF.Currency.Installers.VContainer
 {
     /// <summary>Registers <see cref="ICurrencyService"/> in a VContainer scope. Requires a <see cref="CurrencyRepository"/> asset.</summary>
     public sealed class CurrencyVContainerInstaller : IInstaller

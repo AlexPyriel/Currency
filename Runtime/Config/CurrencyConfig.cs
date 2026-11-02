@@ -2,7 +2,7 @@ using System;
 using ConfigRepository;
 using UnityEngine;
 
-namespace Currency.Config
+namespace GDF.Currency.Config
 {
     /// <summary>
     /// Design-time definition of a currency. Lives inside a <see cref="CurrencyRepository"/> keyed by

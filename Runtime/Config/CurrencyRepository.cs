@@ -1,7 +1,7 @@
 using ConfigRepository;
 using UnityEngine;
 
-namespace Currency.Config
+namespace GDF.Currency.Config
 {
     /// <summary>
     /// ScriptableObject repository of currency definitions. Author one asset per project (or per

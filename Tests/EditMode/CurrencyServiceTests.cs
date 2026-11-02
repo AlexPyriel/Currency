@@ -2,13 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Currency.Config;
-using Currency.Data;
+using GDF.Currency.Config;
+using GDF.Currency.Data;
 using LocalDataStorage;
 using NUnit.Framework;
 using UnityEngine;
 
-namespace Currency.Tests.EditMode
+namespace GDF.Currency.Tests.EditMode
 {
     public sealed class CurrencyServiceTests
     {

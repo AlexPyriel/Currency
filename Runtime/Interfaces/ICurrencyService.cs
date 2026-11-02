@@ -1,6 +1,6 @@
 using System;
 
-namespace Currency
+namespace GDF.Currency
 {
     /// <summary>
     /// Multi-currency wallet. Config is pulled from <see cref="Config.CurrencyRepository"/>; state
