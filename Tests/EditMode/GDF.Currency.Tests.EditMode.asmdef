@@ -4,7 +4,9 @@
     "references": [
         "GDF.Currency",
         "GDF.ConfigRepository",
-        "GDF.LocalDataStorage"
+        "GDF.LocalDataStorage",
+        "MessagePipe",
+        "UniTask"
     ],
     "includePlatforms": [ "Editor" ],
     "excludePlatforms": [],

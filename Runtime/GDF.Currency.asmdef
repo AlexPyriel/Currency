@@ -3,7 +3,8 @@
     "references": [
         "GDF.ConfigRepository",
         "GDF.LocalDataStorage",
-        "AYellowpaper.SerializedCollections"
+        "AYellowpaper.SerializedCollections",
+        "MessagePipe"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

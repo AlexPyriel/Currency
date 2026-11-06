@@ -1,5 +1,36 @@
 # Changelog
 
+## [2.0.0] - 2026-11-06
+
+Breaking release. The wallet publishes MessagePipe messages instead of a C# event, and every mutation
+takes a reason.
+
+### Changed
+
+- `Set`, `Add`, `Spend` and `Reset` take a mandatory `string reason`; null or empty throws `ArgumentException`.
+- `CurrencyService` is `public sealed`, so any DI container can bind it.
+- `Set` and `Reset` no longer announce a change when the balance stays the same.
+- Depends on `com.gdf.local-data-storage >= 3.0.0` and `com.cysharp.messagepipe >= 1.8.2`.
+
+### Added
+
+- `CurrencyChangedMessage` (`CurrencyId`, `OldValue`, `NewValue`, `Delta`, `Reason`), published after each balance change.
+- `CurrencySpendRejectedMessage` (`CurrencyId`, `Requested`, `Available`, `Reason`), published when `Spend` is refused
+  for insufficient funds.
+
+### Removed
+
+- `ICurrencyService.CurrencyChanged` event.
+- Zenject installer (`CurrencyZenjectInstaller`) and Reflex installer (`CurrencyReflexInstaller`). The README section
+  "Using with Zenject / Reflex" shows the replacement bindings.
+
+### Migration
+
+1. Register MessagePipe once in the root scope: `builder.RegisterMessagePipe();`.
+2. Add a reason to each call: `Add("gold", 50)` becomes `Add("gold", 50, "level_reward")`.
+3. Replace `CurrencyChanged += id => ...` with `ISubscriber<CurrencyChangedMessage>.Subscribe(message => ...)`;
+   the message already carries `NewValue`.
+
 ## [1.0.1] - 2026-11-02
 
 ### Changed

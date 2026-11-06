@@ -1,8 +1,8 @@
 {
   "name": "com.gdf.currency",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "displayName": "GDF Currency",
-  "description": "Multi-currency wallet service for Unity. Add / Spend / Reset currencies with earned-total tracking; config lives in com.gdf.config-repository, state persists through com.gdf.local-data-storage.",
+  "description": "Multi-currency wallet service for Unity. Add / Spend / Reset currencies with earned-total tracking; config lives in com.gdf.config-repository, state persists through com.gdf.local-data-storage; changes are published through MessagePipe.",
   "unity": "6000.0",
   "author": {
     "name": "GDF"
@@ -13,7 +13,8 @@
   },
   "dependencies": {
     "com.gdf.config-repository": "https://github.com/AlexPyriel/ConfigRepository.git#v1.1.0",
-    "com.gdf.local-data-storage": "https://github.com/AlexPyriel/LocalDataStorage.git#v2.0.0"
+    "com.gdf.local-data-storage": "https://github.com/AlexPyriel/LocalDataStorage.git#v3.0.0",
+    "com.cysharp.messagepipe": "1.8.2"
   },
   "keywords": [
     "currency",

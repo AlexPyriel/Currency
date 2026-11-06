@@ -2,30 +2,45 @@ using System;
 using System.Collections.Generic;
 using GDF.Currency.Config;
 using GDF.Currency.Data;
+using GDF.Currency.Messages;
 using LocalDataStorage;
+using MessagePipe;
 using UnityEngine;
 
 namespace GDF.Currency.Internal
 {
     /// <summary>
     /// Default <see cref="ICurrencyService"/> implementation. Reads definitions from a
-    /// <see cref="CurrencyRepository"/>, keeps an in-memory wallet and mirrors every mutation to
-    /// <see cref="ILocalDataStorage"/>. Unknown identifiers log a warning and are ignored.
+    /// <see cref="CurrencyRepository"/>, keeps an in-memory wallet, mirrors every mutation to
+    /// <see cref="ILocalDataStorage"/> and publishes the outcome through MessagePipe. Unknown
+    /// identifiers log a warning and are ignored.
     /// </summary>
-    internal sealed class CurrencyService : ICurrencyService
+    public sealed class CurrencyService : ICurrencyService
     {
         private readonly CurrencyRepository _repository;
         private readonly ILocalDataStorage _storage;
+        private readonly IPublisher<CurrencyChangedMessage> _changedPublisher;
+        private readonly IPublisher<CurrencySpendRejectedMessage> _spendRejectedPublisher;
         private readonly Dictionary<string, CurrencyWalletEntry> _wallet = new();
 
-        public event Action<string> CurrencyChanged;
-
-        public CurrencyService(CurrencyRepository repository, ILocalDataStorage storage)
+        /// <summary>Creates the wallet service.</summary>
+        /// <param name="repository">Currency definitions and default balances.</param>
+        /// <param name="storage">Storage that persists <see cref="CurrencyWalletData"/>.</param>
+        /// <param name="changedPublisher">Channel for <see cref="CurrencyChangedMessage"/>.</param>
+        /// <param name="spendRejectedPublisher">Channel for <see cref="CurrencySpendRejectedMessage"/>.</param>
+        public CurrencyService(
+            CurrencyRepository repository,
+            ILocalDataStorage storage,
+            IPublisher<CurrencyChangedMessage> changedPublisher,
+            IPublisher<CurrencySpendRejectedMessage> spendRejectedPublisher)
         {
             _repository = repository != null ? repository : throw new ArgumentNullException(nameof(repository));
             _storage = storage ?? throw new ArgumentNullException(nameof(storage));
+            _changedPublisher = changedPublisher ?? throw new ArgumentNullException(nameof(changedPublisher));
+            _spendRejectedPublisher = spendRejectedPublisher ?? throw new ArgumentNullException(nameof(spendRejectedPublisher));
         }
 
+        /// <inheritdoc />
         public void Initialize()
         {
             _wallet.Clear();
@@ -64,48 +79,56 @@ namespace GDF.Currency.Internal
                 Persist();
         }
 
+        /// <inheritdoc />
         public int Get(string currencyId)
         {
             return _wallet.TryGetValue(currencyId ?? string.Empty, out CurrencyWalletEntry entry) ? entry.Current : 0;
         }
 
+        /// <inheritdoc />
         public int GetEarnedTotal(string currencyId)
         {
             return _wallet.TryGetValue(currencyId ?? string.Empty, out CurrencyWalletEntry entry) ? entry.EarnedTotal : 0;
         }
 
-        public void Set(string currencyId, int value)
+        /// <inheritdoc />
+        public void Set(string currencyId, int value, string reason)
         {
+            RequireReason(reason);
             if (!EnsureKnown(currencyId))
                 return;
 
             value = Math.Max(0, value);
             CurrencyWalletEntry entry = _wallet[currencyId];
-            int delta = value - entry.Current;
-            if (delta > 0)
-                entry.EarnedTotal += delta;
+            int oldValue = entry.Current;
+            if (value == oldValue)
+                return;
+
+            if (value > oldValue)
+                entry.EarnedTotal += value - oldValue;
 
             entry.Current = value;
-            _wallet[currencyId] = entry;
-            Persist();
-            CurrencyChanged?.Invoke(currencyId);
+            Commit(entry, oldValue, reason);
         }
 
-        public void Add(string currencyId, int amount)
+        /// <inheritdoc />
+        public void Add(string currencyId, int amount, string reason)
         {
+            RequireReason(reason);
             if (amount <= 0 || !EnsureKnown(currencyId))
                 return;
 
             CurrencyWalletEntry entry = _wallet[currencyId];
+            int oldValue = entry.Current;
             entry.Current += amount;
             entry.EarnedTotal += amount;
-            _wallet[currencyId] = entry;
-            Persist();
-            CurrencyChanged?.Invoke(currencyId);
+            Commit(entry, oldValue, reason);
         }
 
-        public bool Spend(string currencyId, int amount)
+        /// <inheritdoc />
+        public bool Spend(string currencyId, int amount, string reason)
         {
+            RequireReason(reason);
             if (amount <= 0)
                 return true;
 
@@ -113,27 +136,46 @@ namespace GDF.Currency.Internal
                 return false;
 
             CurrencyWalletEntry entry = _wallet[currencyId];
-            if (entry.Current < amount)
+            int oldValue = entry.Current;
+            if (oldValue < amount)
+            {
+                _spendRejectedPublisher.Publish(new CurrencySpendRejectedMessage(currencyId, amount, oldValue, reason));
                 return false;
+            }
 
             entry.Current -= amount;
-            _wallet[currencyId] = entry;
-            Persist();
-            CurrencyChanged?.Invoke(currencyId);
+            Commit(entry, oldValue, reason);
             return true;
         }
 
-        public void Reset(string currencyId)
+        /// <inheritdoc />
+        public void Reset(string currencyId, string reason)
         {
+            RequireReason(reason);
             if (!EnsureKnown(currencyId))
                 return;
 
             CurrencyWalletEntry entry = _wallet[currencyId];
+            int oldValue = entry.Current;
             entry.Current = 0;
             entry.EarnedTotal = 0;
             _wallet[currencyId] = entry;
             Persist();
-            CurrencyChanged?.Invoke(currencyId);
+            if (oldValue != 0)
+                _changedPublisher.Publish(new CurrencyChangedMessage(currencyId, oldValue, 0, reason));
+        }
+
+        private static void RequireReason(string reason)
+        {
+            if (string.IsNullOrEmpty(reason))
+                throw new ArgumentException("A non-empty reason is required for every wallet mutation.", nameof(reason));
+        }
+
+        private void Commit(CurrencyWalletEntry entry, int oldValue, string reason)
+        {
+            _wallet[entry.CurrencyId] = entry;
+            Persist();
+            _changedPublisher.Publish(new CurrencyChangedMessage(entry.CurrencyId, oldValue, entry.Current, reason));
         }
 
         private bool EnsureKnown(string currencyId)
